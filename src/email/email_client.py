@@ -65,20 +65,37 @@ class EmailClient:
             return False
 
     def get_mailboxes(self):
-        """ 
-        Get all available mailbox names in a user-friendly format.
+        """
+        Get Mailboxes
+        -------------
 
+        Get all available mailbox names in a user-friendly format.
+        
         Note: `mail.list()` returns a tuple containing status and list of mailboxes that are in bytes, 
-        unpack and convert to string datatype. Each mailbox is also a tuple datatype, unpack these as well to access the mailbox name
+        unpack and convert to string datatype. Each mailbox is also a tuple datatype, unpack these as well to access the mailbox name.
+        
+        Returns:
+            data type: `list`
+                A list of available mailbox names.
+                
+        ----
+
+        Usage::
+
+            >>> email_client = EmailClient()
+            >>> mailboxes = email_client.get_mailboxes()
+            >>> print(mailboxes)
 
         """
+
         self.mail.login(self._username, self._password)
         _, mailboxes  = self.mail.list()
+
+        available_mailboxes = []
         for mailbox in mailboxes: 
            flags, _, mailbox_name = mailbox.decode().split('"', 2)
            mailbox_name = mailbox_name.replace('"', ' ').strip() 
-           print(mailbox_name)
-
-
-email_client = EmailClient()
-email_client.get_mailboxes()
+           available_mailboxes.append(mailbox_name)
+        self.mail.logout()
+        logging.info(f"{len(available_mailboxes)} available mailboxes")
+        return available_mailboxes
