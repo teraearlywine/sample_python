@@ -77,7 +77,7 @@ class EmailClient:
         Returns:
             data type: `list`
                 A list of available mailbox names.
-                
+
         ----
 
         Usage::
@@ -99,3 +99,28 @@ class EmailClient:
         self.mail.logout()
         logging.info(f"{len(available_mailboxes)} available mailboxes")
         return available_mailboxes
+
+    def get_inbox_messages(self): 
+        """ 
+        Get All Messages in Inbox
+        -------------------------
+
+        Using the mail.select and mail.search methods, scan the inbox for all messages
+
+
+        """
+        try:
+            self.mail.login(self._username, self._password)
+            self.mail.select('INBOX')
+            status, results = self.mail.search(None, 'ALL')
+        except Exception as err: 
+            logging.info(f"Houston we have a problem \n\n {err}")
+
+
+
+# available_mailboxes = email_client.get_mailboxes()
+# print(available_mailboxes)
+
+email_client = EmailClient()
+
+print(email_client.get_inbox_messages())
