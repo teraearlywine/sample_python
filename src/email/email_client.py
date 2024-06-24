@@ -1,9 +1,9 @@
-from email.header import decode_header
-import email
+
 import logging
 import imaplib
 import os
-import time
+import email
+from email.header import decode_header
 
 logging.basicConfig(level=logging.INFO, datefmt="%Y-%m-%d", format="%(levelname)s - %(asctime)s - %(message)s")
 
@@ -59,8 +59,26 @@ class EmailClient:
             self.mail.login(self._username, self._password)
             logging.info(f"Connection sucessful.")
             self.mail.logout()
-            logging.info(f"Test completed.")
             return True
         except Exception as err: 
             logging.info(f"Houston we have a problem \n\n {err}")
             return False
+
+    def get_mailboxes(self):
+        """ 
+        Get all available mailbox names in a user-friendly format.
+
+        Note: `mail.list()` returns a tuple containing status and list of mailboxes that are in bytes, 
+        unpack and convert to string datatype. Each mailbox is also a tuple datatype, unpack these as well to access the mailbox name
+
+        """
+        self.mail.login(self._username, self._password)
+        _, mailboxes  = self.mail.list()
+        for mailbox in mailboxes: 
+           flags, _, mailbox_name = mailbox.decode().split('"', 2)
+           mailbox_name = mailbox_name.replace('"', ' ').strip() 
+           print(mailbox_name)
+
+
+email_client = EmailClient()
+email_client.get_mailboxes()
