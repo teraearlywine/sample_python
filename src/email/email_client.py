@@ -100,4 +100,5 @@ class EmailClient:
         logging.info(f"{len(available_mailboxes)} available mailboxes")
         return available_mailboxes
 
-# TODO: Add STMP email processing
+# TODO: Add SMTP email processing
+# TODO: Refactor SMTP to be more user friendly / maintainable
