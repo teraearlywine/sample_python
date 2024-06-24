@@ -3,6 +3,7 @@ import email
 import logging
 import imaplib
 import os
+import time
 
 logging.basicConfig(level=logging.INFO, datefmt="%Y-%m-%d", format="%(levelname)s - %(asctime)s - %(message)s")
 
