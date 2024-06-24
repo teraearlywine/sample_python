@@ -1,7 +1,8 @@
 import logging 
 import os
 import pandas as pd
-from data_processing.data_processing import DataCollection
+
+from src.data_processing import DataCollection
 from todoist_api_python.api import TodoistAPI
 
 
@@ -30,4 +31,5 @@ def get_active_projects():
     except Exception as error:
         logging.info(f"Houston we have a problem: {error}")
 
-get_active_projects()
+if __name__=="__main__":
+    get_active_projects()

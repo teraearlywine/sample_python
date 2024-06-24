@@ -24,3 +24,6 @@ class DataCollection:
     def add_record(self, record):
         self.data.append(record)
 
+
+if __name__ == "__main__":
+    DataCollection()
