@@ -56,29 +56,69 @@ class EmailClient:
         """
 
         try:
-            self.mail.login(self._username, self._password)
+            # self.mail.login(self._username, self._password)
             logging.info(f"Connection sucessful.")
-            self.mail.logout()
+            # self.mail.logout()
             return True
         except Exception as err: 
             logging.info(f"Houston we have a problem \n\n {err}")
             return False
 
     def get_mailboxes(self):
-        """ 
-        Get all available mailbox names in a user-friendly format.
+        """
+        Get Mailboxes
+        -------------
 
+        Get all available mailbox names in a user-friendly format.
+        
         Note: `mail.list()` returns a tuple containing status and list of mailboxes that are in bytes, 
-        unpack and convert to string datatype. Each mailbox is also a tuple datatype, unpack these as well to access the mailbox name
+        unpack and convert to string datatype. Each mailbox is also a tuple datatype, unpack these as well to access the mailbox name.
+        
+        Returns:
+            data type: `list`
+                A list of available mailbox names.
+
+        ----
+
+        Usage::
+
+            >>> email_client = EmailClient()
+            >>> mailboxes = email_client.get_mailboxes()
+            >>> print(mailboxes)
 
         """
+
         self.mail.login(self._username, self._password)
         _, mailboxes  = self.mail.list()
+
+        available_mailboxes = []
         for mailbox in mailboxes: 
            flags, _, mailbox_name = mailbox.decode().split('"', 2)
            mailbox_name = mailbox_name.replace('"', ' ').strip() 
-           print(mailbox_name)
+           available_mailboxes.append(mailbox_name)
+        # self.mail.logout()
+        logging.info(f"{len(available_mailboxes)} available mailboxes")
+        return available_mailboxes
+
+    def create_mailbox(self, mailbox_name):
+        """
+        Create new mailbox in apple client using mailbox_name
+        """
+        # Note: This is the only current login call
+        self.mail.login(self._username, self._password) 
+        self.mail.create(mailbox=mailbox_name)
+        # self.mail.logout()
+
+    def delete_mailbox(self, mailbox_name):
+        """
+        Delete mailbox_name
+        """
+        self.mail.login(self._username, self._password) 
+        self.mail.delete(mailbox=mailbox_name)
 
 
-email_client = EmailClient()
-email_client.get_mailboxes()
+if __name__ == "__main__":
+    email_client = EmailClient()
+
+# TODO: triage this following issue tomorrow
+# imaplib.IMAP4.error: command LOGIN illegal in state AUTH, only allowed in states NONAUTH
