@@ -56,9 +56,9 @@ class EmailClient:
         """
 
         try:
-            self.mail.login(self._username, self._password)
+            # self.mail.login(self._username, self._password)
             logging.info(f"Connection sucessful.")
-            self.mail.logout()
+            # self.mail.logout()
             return True
         except Exception as err: 
             logging.info(f"Houston we have a problem \n\n {err}")
@@ -96,9 +96,29 @@ class EmailClient:
            flags, _, mailbox_name = mailbox.decode().split('"', 2)
            mailbox_name = mailbox_name.replace('"', ' ').strip() 
            available_mailboxes.append(mailbox_name)
-        self.mail.logout()
+        # self.mail.logout()
         logging.info(f"{len(available_mailboxes)} available mailboxes")
         return available_mailboxes
 
-# TODO: Add SMTP email processing
-# TODO: Refactor SMTP to be more user friendly / maintainable
+    def create_mailbox(self, mailbox_name):
+        """
+        Create new mailbox in apple client using mailbox_name
+        """
+        # Note: This is the only current login call
+        self.mail.login(self._username, self._password) 
+        self.mail.create(mailbox=mailbox_name)
+        # self.mail.logout()
+
+    def delete_mailbox(self, mailbox_name):
+        """
+        Delete mailbox_name
+        """
+        self.mail.login(self._username, self._password) 
+        self.mail.delete(mailbox=mailbox_name)
+
+
+if __name__ == "__main__":
+    email_client = EmailClient()
+
+# TODO: triage this following issue tomorrow
+# imaplib.IMAP4.error: command LOGIN illegal in state AUTH, only allowed in states NONAUTH
